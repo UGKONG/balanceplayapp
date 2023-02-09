@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "413284548176",
+    "project_id": "balanceplayapp",
+    "storage_bucket": "balanceplayapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413284548176:android:fd16150dda25fbcc5c9b55",
+        "android_client_info": {
+          "package_name": "com.balanceplayapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHRU0ij7Mxf9QENd5xQG8KbWMaA4YdIVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
