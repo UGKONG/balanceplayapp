@@ -68,29 +68,39 @@ export default function Login() {
             const id: string = value?.id ?? '';
             submit({platform, id, os, uuid});
           })
-          .catch(() => {});
+          .catch(err => {
+            console.log(err);
+          });
       })
-      .catch(() => {});
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   // 네이버 로그인
   const naverLogin = (): void => {
     const platform = 'naver';
 
-    NaverLogin.login(naverLoginRequest).then(
-      ({failureResponse, successResponse}): void => {
+    NaverLogin.login(naverLoginRequest)
+      .then(({failureResponse, successResponse}): void => {
         const token = successResponse?.accessToken;
         if (failureResponse || !token) {
           failureResponse && console.log(failureResponse);
           return;
         }
 
-        getProfile(token).then((result: any) => {
-          const id = result?.id ?? '';
-          submit({id, os, platform, uuid});
-        });
-      },
-    );
+        getProfile(token)
+          .then((result: any) => {
+            const id = result?.id ?? '';
+            submit({id, os, platform, uuid});
+          })
+          .catch(err => {
+            console.log('getProfile', err);
+          });
+      })
+      .catch(err => {
+        console.log('NaverLogin.login', err);
+      });
   };
 
   // SNS 로그인 리스트

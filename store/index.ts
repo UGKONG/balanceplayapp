@@ -6,6 +6,7 @@ const currentState: Store = {
   user: null,
   uuid: '',
   getTalk: null,
+  getNotice: null,
 };
 
 // Store Reducer

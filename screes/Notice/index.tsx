@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable curly */
 /* eslint-disable react/react-in-jsx-scope */
 
 import Container from '../../layouts/Container';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Store} from '../../store/index.type';
 import http from '../../functions/http';
 import {useEffect, useMemo, useState} from 'react';
@@ -13,6 +14,7 @@ import NoneItem from './NoneItem';
 import {useIsFocused} from '@react-navigation/native';
 
 export default function Notice() {
+  const dispatch = useDispatch();
   const isFocus = useIsFocused();
   const uuid = useSelector((x: Store) => x?.uuid);
   const [list, setList] = useState<Push[]>([]);
@@ -38,6 +40,15 @@ export default function Notice() {
   }, [list, value]);
 
   useEffect(getList, [uuid, isFocus]);
+  useEffect(() => {
+    dispatch({type: 'getNotice', payload: getList});
+  }, [dispatch, getList]);
+  useEffect(() => {
+    let interval = setInterval(getList, 2000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <Container.Scroll onRefresh={getList}>

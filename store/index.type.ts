@@ -9,4 +9,5 @@ export type Store = {
   user: null | Member;
   uuid: string;
   getTalk: null | ((callback?: () => void) => void);
+  getNotice: null | ((callback?: () => void) => void);
 };

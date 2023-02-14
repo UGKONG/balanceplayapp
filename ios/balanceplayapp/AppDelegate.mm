@@ -36,7 +36,7 @@
     options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
 
     // naver
-    if ([url.scheme isEqualToString:@"naver12345"]) {
+    if ([url.scheme isEqualToString:@"balanceplay"]) {
       return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
     }
     

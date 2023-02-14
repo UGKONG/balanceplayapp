@@ -1,4 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
+
 import Container from '../../layouts/Container';
 import styled from 'styled-components/native';
 import IsPushSetting from './IsPushSetting';

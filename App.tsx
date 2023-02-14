@@ -24,6 +24,7 @@ export default function App() {
   const dispatch = useDispatch();
   const isDarkMode = useColorScheme() === 'dark';
   const getTalk = useSelector((x: Store) => x?.getTalk);
+  const getNotice = useSelector((x: Store) => x?.getNotice);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -58,16 +59,20 @@ export default function App() {
   // 포그라운드 메시지 처리
   const onMessage = (message: FirebaseMessagingTypes.RemoteMessage) => {
     let body = message?.notification?.body ?? '';
-    if (!body || !getTalk) return;
+    if (!body || (!getTalk && !getNotice)) return;
 
     console.log('메시지 수신', body);
-    getTalk();
+    if (getTalk) getTalk();
+    if (getNotice) getNotice();
   };
 
   // 포/백 그라운드 전환 처리
   const appStatusChangeHandler = (state: AppStateStatus): void => {
-    if (state === 'background' || !getTalk) return;
-    setTimeout(getTalk, 300);
+    if (state === 'background' || (!getTalk && !getNotice)) return;
+    setTimeout(() => {
+      if (getTalk) getTalk();
+      if (getNotice) getNotice();
+    }, 500);
   };
 
   useEffect(() => {
@@ -75,7 +80,9 @@ export default function App() {
       'change',
       appStatusChangeHandler,
     );
-    return () => appStateListener.remove();
+    return () => {
+      appStateListener.remove();
+    };
   }, [AppState]);
   useEffect(() => remoteCheck(), []);
   useEffect(() => SplashScreen.hide(), []);
