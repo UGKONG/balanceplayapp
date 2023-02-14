@@ -15,8 +15,8 @@ export default Button;
 const Container = styled.TouchableOpacity.attrs<{readOnly?: boolean}>(x => ({
   activeOpacity: x?.readOnly ? 1 : 0.7,
 }))<{readOnly: boolean}>`
-  border: 1px solid ${x => (x?.readOnly ? '#716191' : '#8b61dc')};
-  background-color: ${x => (x?.readOnly ? '#7a6b99' : '#8863d2')};
+  border: 1px solid ${x => (x?.readOnly ? '#04827f' : '#00a7a4')};
+  background-color: ${x => (x?.readOnly ? '#058785' : '#00ADA9')};
   padding: 12px;
   border-radius: 4px;
 `;

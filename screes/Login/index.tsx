@@ -1,57 +1,110 @@
 /* eslint-disable curly */
 /* eslint-disable react/react-in-jsx-scope */
-import {useEffect, useState} from 'react';
-import {Platform} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import styled from 'styled-components/native';
 import _Container from '../../layouts/Container';
-import messaging from '@react-native-firebase/messaging';
-import Button from '../../layouts/Button';
 import http from '../../functions/http';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {Store} from '../../store/index.type';
+import useSnsList from './useSnsList';
+import {Member, SnsLoginData} from '../../models';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  getProfile as getKakaoProfile,
+  getProfile,
+  login,
+} from '@react-native-seoul/kakao-login';
+import NaverLogin from '@react-native-seoul/naver-login';
+
+const iosKeys = {
+  consumerKey: 'H8YDxnXfTpikQKzQWRAk',
+  consumerSecret: 'ZhRcMdULk6',
+  appName: 'balanceplayapp',
+  serviceUrlScheme: 'balanceplay',
+  disableNaverAppAuth: true,
+};
+const androidKeys = {
+  consumerKey: 'H8YDxnXfTpikQKzQWRAk',
+  consumerSecret: 'ZhRcMdULk6',
+  appName: 'balanceplayapp',
+};
 
 const os = Platform.OS;
+const naverLoginRequest = os === 'ios' ? iosKeys : androidKeys;
 
 export default function Login() {
   const dispatch = useDispatch();
-  const [uuid, setUuid] = useState<null | string>(null);
+  const uuid = useSelector((x: Store) => x?.uuid);
 
-  // UUID 조회
-  const getUuid = (): void => {
-    messaging()
-      .getToken()
-      .then(setUuid)
-      .catch(() => setUuid(''));
+  const success = (data: Member): void => {
+    dispatch({type: 'user', payload: data});
+    AsyncStorage.setItem('user', JSON.stringify(data));
+  };
+  const fail = (msg?: string): void => {
+    dispatch({type: 'user', payload: null});
+    AsyncStorage.removeItem('user');
+    Alert.alert('로그인 실패', msg || '일치하는 회원이 없습니다.');
   };
 
-  // Balance Login
-  // const balanceLogin = (data): void => {};
-
-  // 개발용 로그인
-  const devLogin = (): void => {
-    console.log('개발용 로그인을 시도합니다.');
-    const form = {
-      EMAIL: 'jsw01137@naver.com',
-      CENTER_ID: 1,
-      AUTH_ID: '1867606287',
-    };
+  // 최종 로그인
+  const submit = (form: SnsLoginData): void => {
     http
-      .post('/login', form)
+      .post('/app/login', form)
       .then(({data}) => {
-        dispatch({type: 'user', payload: data?.data});
+        if (!data?.result) return fail(data?.msg);
+        success(data?.data);
+      })
+      .catch(() => fail());
+  };
+
+  // 카카오 로그인
+  const kakaoLogin = (): void => {
+    const platform = 'kakao';
+
+    login()
+      .then(() => {
+        getKakaoProfile()
+          .then((value: any): void | PromiseLike<void> => {
+            const id: string = value?.id ?? '';
+            submit({platform, id, os, uuid});
+          })
+          .catch(() => {});
       })
       .catch(() => {});
   };
 
-  useEffect(getUuid, []);
-  useEffect(() => {
-    if (uuid) console.log(os, uuid);
-  }, [uuid]);
+  // 네이버 로그인
+  const naverLogin = (): void => {
+    const platform = 'naver';
+
+    NaverLogin.login(naverLoginRequest).then(
+      ({failureResponse, successResponse}): void => {
+        const token = successResponse?.accessToken;
+        if (failureResponse || !token) {
+          failureResponse && console.log(failureResponse);
+          return;
+        }
+
+        getProfile(token).then((result: any) => {
+          const id = result?.id ?? '';
+          submit({id, os, platform, uuid});
+        });
+      },
+    );
+  };
+
+  // SNS 로그인 리스트
+  const snsList = useSnsList(kakaoLogin, naverLogin);
 
   return (
     <Container>
       <Image />
       <Buttons>
-        <Button onPress={devLogin}>개발용 로그인</Button>
+        {snsList?.map(item => (
+          <Button key={item?.id} color={item?.color} onPress={item?.onPress}>
+            <SNSImage source={item?.img as any} />
+          </Button>
+        ))}
       </Buttons>
     </Container>
   );
@@ -68,4 +121,26 @@ const Image = styled.Image.attrs(() => ({
   max-width: 300px;
   width: 50%;
 `;
-const Buttons = styled.View``;
+const Buttons = styled.View`
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+`;
+type ButtonProps = {color: string};
+const Button = styled.TouchableOpacity.attrs(() => ({
+  activeOpacity: 0.7,
+}))<ButtonProps>`
+  width: 54px;
+  height: 54px;
+  border-radius: 54px;
+  margin: 14px;
+  overflow: hidden;
+  border: 2px solid ${(x: ButtonProps) => x?.color};
+  background-color: ${(x: ButtonProps) => x?.color};
+`;
+const SNSImage = styled.Image.attrs(() => ({
+  resizeMode: 'contain',
+}))`
+  width: 101%;
+  height: 101%;
+`;

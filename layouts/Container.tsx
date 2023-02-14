@@ -1,13 +1,10 @@
+/* eslint-disable curly */
+/* eslint-disable react/react-in-jsx-scope */
 import {useState} from 'react';
 import {RefreshControl} from 'react-native';
 import styled from 'styled-components/native';
 
-type Props = {
-  onRefresh?: () => void;
-  children?: any;
-};
-
-const Scroll = (props: Props): JSX.Element => {
+const Scroll = (props: any): JSX.Element => {
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
 
   const fn = () => {
@@ -18,7 +15,9 @@ const Scroll = (props: Props): JSX.Element => {
 
   return (
     <ScrollContainer
+      ref={props?.childRef}
       {...props}
+      scrollEventThrottle={1}
       refreshControl={<RefreshControl refreshing={isRefresh} onRefresh={fn} />}>
       {props?.children}
     </ScrollContainer>
@@ -34,14 +33,12 @@ const View = (props: any): JSX.Element => {
 };
 
 const ScrollContainer = styled.ScrollView`
-  padding: 15px;
   width: 100%;
   flex: 1;
   position: relative;
   background-color: #fff;
 `;
 const ViewContainer = styled.SafeAreaView`
-  padding: 15px;
   position: relative;
   width: 100%;
   height: 100%;
@@ -50,7 +47,6 @@ const ViewContainer = styled.SafeAreaView`
 const Contents = styled.View`
   width: 100%;
   height: 100%;
-  padding: 10px;
   align-items: center;
   justify-content: flex-start;
   position: relative;

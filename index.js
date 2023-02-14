@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable curly */
 import {AppRegistry, Platform} from 'react-native';
 import App from './App';
@@ -6,6 +7,8 @@ import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
 import useIosPush from './hooks/useIosPush';
 import useAndroidPush from './hooks/useAndroidPush';
+import {Provider} from 'react-redux';
+import store from './store';
 
 const OS = Platform.OS;
 
@@ -13,9 +16,6 @@ const popInitialNotification = true;
 const requestPermissions = true;
 const notificationOptions = {popInitialNotification, requestPermissions};
 const channelOptions = {channelId: 'push', channelName: 'push'};
-
-PushNotification.configure(notificationOptions);
-PushNotification.createChannel(channelOptions, () => {});
 
 // 백그라운드에서 푸쉬
 messaging().setBackgroundMessageHandler(async ({notification}) => {
@@ -26,4 +26,14 @@ messaging().setBackgroundMessageHandler(async ({notification}) => {
   (OS === 'ios' ? iosPush : androidPush)(title, body);
 });
 
-AppRegistry.registerComponent(appName, () => App);
+// 푸쉬 초기 셋팅
+PushNotification.configure(notificationOptions);
+PushNotification.createChannel(channelOptions, () => {});
+
+const Root = () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+
+AppRegistry.registerComponent(appName, () => Root);

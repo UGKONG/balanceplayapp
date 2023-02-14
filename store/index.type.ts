@@ -1,4 +1,4 @@
-import {User} from '../models';
+import {Member} from '../models';
 
 export type Dispatch = {
   type: keyof Store;
@@ -6,5 +6,7 @@ export type Dispatch = {
 };
 
 export type Store = {
-  user: null | User;
+  user: null | Member;
+  uuid: string;
+  getTalk: null | ((callback?: () => void) => void);
 };

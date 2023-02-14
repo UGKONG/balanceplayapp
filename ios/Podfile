@@ -17,6 +17,8 @@ target 'balanceplayapp' do
 
   pod 'FirebaseCore', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'naveridlogin-sdk-ios'
 
   # Flags change depending on the env values.
   flags = get_default_flags()

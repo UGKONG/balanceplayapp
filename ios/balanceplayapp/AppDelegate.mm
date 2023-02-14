@@ -4,6 +4,9 @@
 #import <FirebaseCore.h>
 #import <FirebaseMessaging.h>
 
+#import <RNKakaoLogins.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
+
 #import <React/RCTBundleURLProvider.h>
 
 // #import "RNSplashScreen.h"
@@ -26,6 +29,23 @@
   
   // [RNSplashScreen show];
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (BOOL)application:(UIApplication *)application
+    openURL:(NSURL *)url
+    options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+
+    // naver
+    if ([url.scheme isEqualToString:@"naver12345"]) {
+      return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
+    }
+    
+    // kakao
+    if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
+      return [RNKakaoLogins handleOpenUrl: url];
+    }
+
+  return YES;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

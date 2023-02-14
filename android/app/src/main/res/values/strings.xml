@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">밸런스톡</string>
+    <string name="kakao_app_key">4131a4730603376848d667d1feba263e</string>
+    
 </resources>

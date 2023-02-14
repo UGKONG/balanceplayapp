@@ -4,6 +4,8 @@ import {Dispatch, Store} from './index.type';
 // Store Current State
 const currentState: Store = {
   user: null,
+  uuid: '',
+  getTalk: null,
 };
 
 // Store Reducer
