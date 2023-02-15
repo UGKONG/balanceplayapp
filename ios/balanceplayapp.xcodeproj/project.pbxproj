@@ -331,7 +331,7 @@
 				CODE_SIGN_ENTITLEMENTS = balanceplayapp/balanceplayapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 5UNMY7T7GC;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = balanceplayapp/Info.plist;
@@ -371,7 +371,7 @@
 				CODE_SIGN_ENTITLEMENTS = balanceplayapp/balanceplayapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 5UNMY7T7GC;
 				INFOPLIST_FILE = balanceplayapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "플레이톡";
